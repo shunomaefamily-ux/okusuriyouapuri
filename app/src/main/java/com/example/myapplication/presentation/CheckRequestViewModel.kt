@@ -46,7 +46,7 @@ class CheckRequestViewModel : ViewModel() {
         }
     }
 
-    fun confirm() {
+    fun confirm(personId: Long) {
         val current = _uiState.value.checkRequest ?: return
 
         viewModelScope.launch {
@@ -57,8 +57,11 @@ class CheckRequestViewModel : ViewModel() {
             try {
                 repository.confirm(current.id.toLong())
 
+                val result = repository.fetchCurrent(personId)
+
                 _uiState.value = _uiState.value.copy(
                     isSubmitting = false,
+                    checkRequest = result,
                     message = "服薬を記録しました"
                 )
             } catch (e: Exception) {

@@ -75,10 +75,15 @@ fun CheckRequestScreen(
             Spacer(Modifier.height(12.dp))
 
             Button(
-                onClick = { vm.confirm() },
-                modifier = Modifier.fillMaxWidth()
+                onClick = { vm.confirm(personId) },
+                enabled = !state.isSubmitting
             ) {
-                Text("飲みました")
+                Text(
+                    if (state.isSubmitting)
+                        "記録中..."
+                    else
+                        "飲みました"
+                )
             }
         }
 
