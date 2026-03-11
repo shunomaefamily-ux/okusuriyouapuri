@@ -29,22 +29,19 @@ class CheckRequestViewModel : ViewModel() {
 
     fun loadCurrent() {
         viewModelScope.launch {
-
             _uiState.value = _uiState.value.copy(
                 isLoading = true,
                 message = null
             )
 
             try {
-                val result = repository.fetchCurrent()
+                val result = repository.fetchCurrent(1)
 
                 _uiState.value = _uiState.value.copy(
                     isLoading = false,
                     checkRequest = result
                 )
-
             } catch (e: Exception) {
-
                 _uiState.value = _uiState.value.copy(
                     isLoading = false,
                     message = "取得に失敗しました"
@@ -54,18 +51,15 @@ class CheckRequestViewModel : ViewModel() {
     }
 
     fun confirm() {
-
         val current = _uiState.value.checkRequest ?: return
 
         viewModelScope.launch {
-
             _uiState.value = _uiState.value.copy(
                 isSubmitting = true
             )
 
             try {
-
-                repository.confirm(current.id)
+                repository.confirm(current.id.toLong())
 
                 _uiState.value = _uiState.value.copy(
                     isSubmitting = false,
@@ -73,9 +67,7 @@ class CheckRequestViewModel : ViewModel() {
                 )
 
                 loadCurrent()
-
             } catch (e: Exception) {
-
                 _uiState.value = _uiState.value.copy(
                     isSubmitting = false,
                     message = "送信に失敗しました"

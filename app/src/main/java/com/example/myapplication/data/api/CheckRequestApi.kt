@@ -9,10 +9,9 @@ import retrofit2.http.Query
 interface CheckRequestApi {
 
     @GET("api/check_request/current")
-        suspend fun getCurrentCheckRequest(
-            @Query("person_id") personId: Long
-        ): CurrentCheckRequestResponse
-
+    suspend fun getCurrentCheckRequest(
+        @Query("person_id") personId: Long
+    ): CurrentCheckRequestResponse
 
     @POST("api/check_requests/{id}/confirm")
     suspend fun confirmCheckRequest(
