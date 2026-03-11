@@ -27,6 +27,7 @@ fun RailsWebScreen(
         AndroidView(
             factory = { context ->
                 WebView(context).apply {
+
                     webViewClient = WebViewClient()
 
                     webChromeClient = object : WebChromeClient() {
@@ -37,6 +38,9 @@ fun RailsWebScreen(
 
                     settings.javaScriptEnabled = true
                     settings.domStorageEnabled = true
+                    settings.databaseEnabled = true
+                    settings.allowFileAccess = true
+                    settings.allowContentAccess = true
                     settings.mediaPlaybackRequiresUserGesture = false
 
                     loadUrl(url)
