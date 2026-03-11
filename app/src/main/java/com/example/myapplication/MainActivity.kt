@@ -46,7 +46,6 @@ class MainActivity : ComponentActivity() {
                 if (showWeb) {
                     RailsWebScreen(
                         url = "https://railsgirls-psq6.onrender.com/",
-                        onBack = { showWeb = false }
                     )
                 } else if (selectedPersonId == null) {
                     PersonSelectScreen(
