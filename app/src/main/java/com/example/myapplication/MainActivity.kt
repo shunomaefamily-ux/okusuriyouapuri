@@ -28,29 +28,30 @@ class MainActivity : ComponentActivity() {
 
                 var showWeb by remember { mutableStateOf(false) }
 
-                if (selectedPersonId == null) {
-                    if (showWeb) {
-                        RailsWebScreen(
-                            url = "https://railsgirls-psq6.onrender.com/",
-                            onBack = { showWeb = false }
-                        )
-                    } else {
-                        PersonSelectScreen(
-                            onPersonSelected = { personId ->
-                                prefs.edit()
-                                    .putLong("selected_person_id", personId)
-                                    .apply()
+                if (showWeb) {
+                    RailsWebScreen(
+                        url = "https://railsgirls-psq6.onrender.com/",
+                        onBack = { showWeb = false }
+                    )
+                } else if (selectedPersonId == null) {
+                    PersonSelectScreen(
+                        onPersonSelected = { personId ->
+                            prefs.edit()
+                                .putLong("selected_person_id", personId)
+                                .apply()
 
-                                selectedPersonId = personId
-                            },
-                            onOpenWeb = {
-                                showWeb = true
-                            }
-                        )
-                    }
+                            selectedPersonId = personId
+                        },
+                        onOpenWeb = {
+                            showWeb = true
+                        }
+                    )
                 } else {
                     CheckRequestScreen(
-                        personId = selectedPersonId!!
+                        personId = selectedPersonId!!,
+                        onAdminLongPress = {
+                            showWeb = true
+                        }
                     )
                 }
             }
