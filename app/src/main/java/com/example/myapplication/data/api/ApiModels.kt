@@ -25,3 +25,12 @@ data class ConfirmRequest(
 data class ConfirmResponse(
     val success: Boolean = true
 )
+
+data class PeopleResponse(
+    val people: List<PersonDto>
+)
+
+data class PersonDto(
+    val id: Long,
+    val name: String
+)

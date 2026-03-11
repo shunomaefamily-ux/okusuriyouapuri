@@ -8,6 +8,9 @@ import retrofit2.http.Query
 
 interface CheckRequestApi {
 
+    @GET("api/people")
+    suspend fun getPeople(): PeopleResponse
+
     @GET("api/check_request/current")
     suspend fun getCurrentCheckRequest(
         @Query("person_id") personId: Long
