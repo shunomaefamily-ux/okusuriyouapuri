@@ -23,11 +23,7 @@ class CheckRequestViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(CheckRequestUiState())
     val uiState: StateFlow<CheckRequestUiState> = _uiState.asStateFlow()
 
-    init {
-        loadCurrent()
-    }
-
-    fun loadCurrent() {
+    fun loadCurrent(personId: Long) {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(
                 isLoading = true,
@@ -35,7 +31,7 @@ class CheckRequestViewModel : ViewModel() {
             )
 
             try {
-                val result = repository.fetchCurrent(1)
+                val result = repository.fetchCurrent(personId)
 
                 _uiState.value = _uiState.value.copy(
                     isLoading = false,
@@ -65,8 +61,6 @@ class CheckRequestViewModel : ViewModel() {
                     isSubmitting = false,
                     message = "服薬を記録しました"
                 )
-
-                loadCurrent()
             } catch (e: Exception) {
                 _uiState.value = _uiState.value.copy(
                     isSubmitting = false,

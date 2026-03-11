@@ -7,15 +7,18 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.myapplication.presentation.CheckRequestViewModel
 
 @Composable
 fun CheckRequestScreen(
-    vm: CheckRequestViewModel = viewModel()
+    personId: Long,
+    vm: CheckRequestViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
 ) {
-
     val state by vm.uiState.collectAsState()
+
+    LaunchedEffect(personId) {
+        vm.loadCurrent(personId)
+    }
 
     if (state.isLoading) {
         Box(Modifier.fillMaxSize()) {
@@ -32,7 +35,7 @@ fun CheckRequestScreen(
 
             Spacer(Modifier.height(16.dp))
 
-            Button(onClick = { vm.loadCurrent() }) {
+            Button(onClick = { vm.loadCurrent(personId) }) {
                 Text("再読み込み")
             }
         }
@@ -43,7 +46,6 @@ fun CheckRequestScreen(
         modifier = Modifier.padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-
         item {
             Text(check.title, style = MaterialTheme.typography.headlineSmall)
         }
