@@ -8,11 +8,10 @@ class CheckRequestRepository {
 
     private val api = ApiClient.api
 
-    suspend fun fetchCurrent(): CheckRequestDto? {
-        val response = api.getCurrentCheckRequest()
+    suspend fun fetchCurrent(personId: Long): CheckRequestDto? {
+        val response = api.getCurrentCheckRequest(personId)
         return response.check_request
     }
-
     suspend fun confirm(id: Long) {
         api.confirmCheckRequest(
             id = id,
