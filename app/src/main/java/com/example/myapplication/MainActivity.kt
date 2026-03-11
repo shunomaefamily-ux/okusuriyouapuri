@@ -1,10 +1,14 @@
 package com.example.myapplication
 
+import android.Manifest
 import android.content.Context
+import android.content.pm.PackageManager
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.*
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.example.myapplication.ui.CheckRequestScreen
 import com.example.myapplication.ui.PersonSelectScreen
 import com.example.myapplication.ui.RailsWebScreen
@@ -14,6 +18,17 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // カメラの実行時 permission を要求
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+            != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.CAMERA),
+                1
+            )
+        }
 
         val prefs = getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
         val savedPersonId = prefs.getLong("selected_person_id", -1L)
