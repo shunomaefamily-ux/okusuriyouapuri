@@ -1,52 +1,58 @@
 package com.example.myapplication.ui
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.webkit.PermissionRequest
 import android.webkit.WebChromeClient
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Button
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.content.ContextCompat
+import android.content.pm.PackageManager
 
 @SuppressLint("SetJavaScriptEnabled")
 @Composable
-fun RailsWebScreen(
-    url: String,
-    onBack: () -> Unit
-) {
-    Column {
-        Button(onClick = onBack) {
-            Text("戻る")
-        }
+fun RailsWebScreen(url: String) {
+    AndroidView(
+        factory = { context ->
+            WebView(context).apply {
+                settings.javaScriptEnabled = true
+                settings.domStorageEnabled = true
+                settings.databaseEnabled = true
+                settings.mediaPlaybackRequiresUserGesture = false
 
-        AndroidView(
-            factory = { context ->
-                WebView(context).apply {
+                webViewClient = WebViewClient()
 
-                    webViewClient = WebViewClient()
+                webChromeClient = object : WebChromeClient() {
+                    override fun onPermissionRequest(request: PermissionRequest) {
+                        post {
+                            val hasCameraPermission =
+                                ContextCompat.checkSelfPermission(
+                                    context,
+                                    Manifest.permission.CAMERA
+                                ) == PackageManager.PERMISSION_GRANTED
 
-                    webChromeClient = object : WebChromeClient() {
-                        override fun onPermissionRequest(request: PermissionRequest) {
-                            request.grant(request.resources)
+                            if (!hasCameraPermission) {
+                                request.deny()
+                                return@post
+                            }
+
+                            val grants = request.resources.filter {
+                                it == PermissionRequest.RESOURCE_VIDEO_CAPTURE
+                            }
+
+                            if (grants.isNotEmpty()) {
+                                request.grant(grants.toTypedArray())
+                            } else {
+                                request.deny()
+                            }
                         }
                     }
-
-                    settings.javaScriptEnabled = true
-                    settings.domStorageEnabled = true
-                    settings.databaseEnabled = true
-                    settings.allowFileAccess = true
-                    settings.allowContentAccess = true
-                    settings.mediaPlaybackRequiresUserGesture = false
-
-                    loadUrl(url)
                 }
-            },
-            modifier = Modifier.fillMaxSize()
-        )
-    }
+
+                loadUrl(url)
+            }
+        }
+    )
 }
