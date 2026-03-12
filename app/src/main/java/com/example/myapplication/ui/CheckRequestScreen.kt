@@ -20,6 +20,19 @@ fun CheckRequestScreen(
     val state by vm.uiState.collectAsState()
     val context = LocalContext.current
 
+    fun openAdminPage() {
+        val url = "https://railsgirls-psq6.onrender.com/"
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+        context.startActivity(intent)
+    }
+
+    @Composable
+    fun AdminPageButton() {
+        TextButton(onClick = { openAdminPage() }) {
+            Text("管理ページ")
+        }
+    }
+
     LaunchedEffect(personId) {
         vm.loadCurrent(personId)
     }
@@ -45,15 +58,7 @@ fun CheckRequestScreen(
 
             Spacer(Modifier.height(16.dp))
 
-            TextButton(
-                onClick = {
-                    val url = "https://railsgirls-psq6.onrender.com/scan"
-                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-                    context.startActivity(intent)
-                }
-            ) {
-                Text("管理ページ")
-            }
+            AdminPageButton()
         }
         return
     }
@@ -106,16 +111,7 @@ fun CheckRequestScreen(
 
         item {
             Spacer(Modifier.height(16.dp))
-
-            TextButton(
-                onClick = {
-                    val url = "https://railsgirls-psq6.onrender.com/"
-                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-                    context.startActivity(intent)
-                }
-            ) {
-                Text("管理ページ")
-            }
+            AdminPageButton()
         }
     }
 }
