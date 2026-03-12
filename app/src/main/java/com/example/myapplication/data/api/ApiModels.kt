@@ -23,7 +23,7 @@ data class ConfirmRequest(
 )
 
 data class ConfirmResponse(
-    val success: Boolean = true
+    val ok: Boolean = true
 )
 
 data class PeopleResponse(

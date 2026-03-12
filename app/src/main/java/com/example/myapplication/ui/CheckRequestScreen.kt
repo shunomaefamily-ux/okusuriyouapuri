@@ -1,11 +1,14 @@
 package com.example.myapplication.ui
 
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.example.myapplication.presentation.CheckRequestViewModel
 
@@ -15,6 +18,7 @@ fun CheckRequestScreen(
     vm: CheckRequestViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
 ) {
     val state by vm.uiState.collectAsState()
+    val context = LocalContext.current
 
     LaunchedEffect(personId) {
         vm.loadCurrent(personId)
@@ -37,6 +41,18 @@ fun CheckRequestScreen(
 
             Button(onClick = { vm.loadCurrent(personId) }) {
                 Text("再読み込み")
+            }
+
+            Spacer(Modifier.height(16.dp))
+
+            TextButton(
+                onClick = {
+                    val url = "https://railsgirls-psq6.onrender.com/scan"
+                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                    context.startActivity(intent)
+                }
+            ) {
+                Text("管理ページ")
             }
         }
         return
@@ -78,18 +94,27 @@ fun CheckRequestScreen(
                 onClick = { vm.confirm(personId) },
                 enabled = !state.isSubmitting
             ) {
-                Text(
-                    if (state.isSubmitting)
-                        "記録中..."
-                    else
-                        "飲みました"
-                )
+                Text(if (state.isSubmitting) "記録中..." else "飲みました")
             }
         }
 
         state.message?.let {
             item {
                 Text(it)
+            }
+        }
+
+        item {
+            Spacer(Modifier.height(16.dp))
+
+            TextButton(
+                onClick = {
+                    val url = "https://railsgirls-psq6.onrender.com/"
+                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                    context.startActivity(intent)
+                }
+            ) {
+                Text("管理ページ")
             }
         }
     }
