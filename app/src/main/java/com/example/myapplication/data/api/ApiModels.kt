@@ -15,7 +15,8 @@ data class CheckRequestDto(
 data class CheckRequestItemDto(
     val name: String,
     val dose_amount: String,
-    val dose_unit: String
+    val dose_unit: String,
+    val usage_text: String? = null
 )
 
 data class ConfirmRequest(

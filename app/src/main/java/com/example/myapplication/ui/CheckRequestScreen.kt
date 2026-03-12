@@ -88,6 +88,11 @@ fun CheckRequestScreen(
                 Column(Modifier.padding(12.dp)) {
                     Text(item.name)
                     Text("${item.dose_amount}${item.dose_unit}")
+
+                    if (!item.usage_text.isNullOrBlank()) {
+                        Spacer(Modifier.height(4.dp))
+                        Text(item.usage_text)
+                    }
                 }
             }
         }
