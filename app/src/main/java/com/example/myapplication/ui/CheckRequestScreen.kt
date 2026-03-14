@@ -10,7 +10,13 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import com.example.myapplication.data.api.CheckRequestItemDto
 import com.example.myapplication.presentation.CheckRequestViewModel
+
+private data class SlotTab(
+    val key: String,
+    val label: String
+)
 
 @Composable
 fun CheckRequestScreen(
@@ -19,6 +25,14 @@ fun CheckRequestScreen(
 ) {
     val state by vm.uiState.collectAsState()
     val context = LocalContext.current
+
+    val tabs = listOf(
+        SlotTab("morning", "朝"),
+        SlotTab("noon", "昼"),
+        SlotTab("evening", "晩")
+    )
+
+    var selectedSlot by remember { mutableStateOf("morning") }
 
     fun openAdminPage() {
         val url = "https://railsgirls-psq6.onrender.com/"
@@ -63,6 +77,14 @@ fun CheckRequestScreen(
         return
     }
 
+    val filteredItems = check.items.filter { item ->
+        item.usage_kind == "regular" && item.usage_slots.contains(selectedSlot)
+    }
+
+    val prnItems = check.items.filter { item ->
+        item.usage_kind == "prn"
+    }
+
     LazyColumn(
         modifier = Modifier.padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
@@ -80,20 +102,41 @@ fun CheckRequestScreen(
         }
 
         item {
-            Text("お薬", style = MaterialTheme.typography.titleMedium)
+            TabRow(
+                selectedTabIndex = tabs.indexOfFirst { it.key == selectedSlot }
+            ) {
+                tabs.forEach { tab ->
+                    Tab(
+                        selected = tab.key == selectedSlot,
+                        onClick = { selectedSlot = tab.key },
+                        text = { Text(tab.label) }
+                    )
+                }
+            }
         }
 
-        items(check.items) { item ->
-            Card {
-                Column(Modifier.padding(12.dp)) {
-                    Text(item.name)
-                    Text("${item.dose_amount}${item.dose_unit}")
+        item {
+            Text("${tabs.first { it.key == selectedSlot }.label}のお薬", style = MaterialTheme.typography.titleMedium)
+        }
 
-                    if (!item.usage_text.isNullOrBlank()) {
-                        Spacer(Modifier.height(4.dp))
-                        Text(item.usage_text)
-                    }
-                }
+        if (filteredItems.isEmpty()) {
+            item {
+                Text("この時間帯のお薬はありません")
+            }
+        } else {
+            items(filteredItems) { item ->
+                MedicationItemCard(item)
+            }
+        }
+
+        if (prnItems.isNotEmpty()) {
+            item {
+                Spacer(Modifier.height(8.dp))
+                Text("頓服", style = MaterialTheme.typography.titleMedium)
+            }
+
+            items(prnItems) { item ->
+                MedicationItemCard(item)
             }
         }
 
@@ -101,7 +144,7 @@ fun CheckRequestScreen(
             Spacer(Modifier.height(12.dp))
 
             Button(
-                onClick = { vm.confirm(personId) },
+                onClick = { vm.confirm(personId, selectedSlot) },
                 enabled = !state.isSubmitting
             ) {
                 Text(if (state.isSubmitting) "記録中..." else "飲みました")
@@ -117,6 +160,21 @@ fun CheckRequestScreen(
         item {
             Spacer(Modifier.height(16.dp))
             AdminPageButton()
+        }
+    }
+}
+
+@Composable
+private fun MedicationItemCard(item: CheckRequestItemDto) {
+    Card {
+        Column(Modifier.padding(12.dp)) {
+            Text(item.name)
+            Text("${item.dose_amount}${item.dose_unit}")
+
+            if (!item.usage_text.isNullOrBlank()) {
+                Spacer(Modifier.height(4.dp))
+                Text(item.usage_text)
+            }
         }
     }
 }

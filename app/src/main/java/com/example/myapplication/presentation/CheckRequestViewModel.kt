@@ -46,7 +46,7 @@ class CheckRequestViewModel : ViewModel() {
         }
     }
 
-    fun confirm(personId: Long) {
+    fun confirm(personId: Long, slot: String) {
         val current = _uiState.value.checkRequest ?: return
 
         viewModelScope.launch {
@@ -55,7 +55,7 @@ class CheckRequestViewModel : ViewModel() {
             )
 
             try {
-                repository.confirm(current.id.toLong())
+                repository.confirm(current.id.toLong(), slot)
 
                 val result = repository.fetchCurrent(personId)
 

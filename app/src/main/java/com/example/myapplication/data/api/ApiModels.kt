@@ -16,11 +16,14 @@ data class CheckRequestItemDto(
     val name: String,
     val dose_amount: String,
     val dose_unit: String,
-    val usage_text: String? = null
+    val usage_text: String? = null,
+    val usage_kind: String? = null,
+    val usage_slots: List<String> = emptyList()
 )
 
 data class ConfirmRequest(
-    val source: String
+    val source: String,
+    val slot: String? = null
 )
 
 data class ConfirmResponse(

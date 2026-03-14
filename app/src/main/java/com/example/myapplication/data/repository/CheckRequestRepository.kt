@@ -18,11 +18,12 @@ class CheckRequestRepository {
         return response.check_request
     }
 
-    suspend fun confirm(id: Long) {
+    suspend fun confirm(id: Long, slot: String) {
         api.confirmCheckRequest(
             id = id,
             request = ConfirmRequest(
-                source = "android_app"
+                source = "android_app",
+                slot = slot
             )
         )
     }
